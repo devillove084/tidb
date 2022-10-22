@@ -1,0 +1,5 @@
+package foreign
+
+func ExampleOfUse() {
+
+}

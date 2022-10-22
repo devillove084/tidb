@@ -276,6 +276,8 @@ type Config struct {
 	Plugin                     Plugin     `toml:"plugin" json:"plugin"`
 	MaxServerConnections       uint32     `toml:"max-server-connections" json:"max-server-connections"`
 	RunDDL                     bool       `toml:"run-ddl" json:"run-ddl"`
+	ForeignDriver              string     `toml:"foreign-driver" json: mysql`
+	Model                      string     `toml:"foreign-model-json" json: model.json`
 }
 
 // UpdateTempStoragePath is to update the `TempStoragePath` if port/statusPort was changed

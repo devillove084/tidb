@@ -37,6 +37,7 @@ import (
 	"github.com/pingcap/tidb/domain"
 	"github.com/pingcap/tidb/domain/infosync"
 	"github.com/pingcap/tidb/executor"
+	"github.com/pingcap/tidb/foreign"
 	"github.com/pingcap/tidb/kv"
 	"github.com/pingcap/tidb/metrics"
 	"github.com/pingcap/tidb/parser/mysql"
@@ -113,6 +114,9 @@ const (
 	nmRepairList       = "repair-list"
 	nmTempDir          = "temp-dir"
 
+	nmModel         = "model"
+	nmForeignDriver = "driver"
+
 	nmProxyProtocolNetworks      = "proxy-protocol-networks"
 	nmProxyProtocolHeaderTimeout = "proxy-protocol-header-timeout"
 	nmAffinityCPU                = "affinity-cpus"
@@ -145,6 +149,10 @@ var (
 	repairMode       = flagBoolean(nmRepairMode, false, "enable admin repair mode")
 	repairList       = flag.String(nmRepairList, "", "admin repair table list")
 	tempDir          = flag.String(nmTempDir, config.DefTempDir, "tidb temporary directory")
+
+	// Foreign
+	foreignDriver = flag.String(nmForeignDriver, "", "foreign database driver")
+	model         = flag.String(nmModel, "", "foreign model json file")
 
 	// Log
 	logLevel     = flag.String(nmLogLevel, "info", "log level: info, debug, warn, error, fatal")
@@ -286,6 +294,8 @@ func registerStores() {
 	err = kvstore.Register("mocktikv", mockstore.MockTiKVDriver{})
 	terror.MustNil(err)
 	err = kvstore.Register("unistore", mockstore.EmbedUnistoreDriver{})
+	terror.MustNil(err)
+	err = foreign.Register("mysql", foreign.ForeignDriver{})
 	terror.MustNil(err)
 }
 
@@ -479,6 +489,15 @@ func overrideConfig(cfg *config.Config) {
 	}
 	if actualFlags[nmTempDir] {
 		cfg.TempDir = *tempDir
+	}
+
+	// Foreign
+	if actualFlags[nmForeignDriver] {
+		cfg.ForeignDriver = *foreignDriver
+	}
+
+	if actualFlags[nmModel] {
+		cfg.Model = *model
 	}
 
 	// Log

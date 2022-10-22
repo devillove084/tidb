@@ -1,0 +1,17 @@
+{
+    "version": "1.0",
+    "defaultSchema": "test",
+    "schemas": [
+        {
+            "name": "test",
+            "type": "custom",
+            "factory": "InnodbSchemaFactory",
+            "operand": {
+                "sqlFilePath": [
+                    "test.sql"
+                ],
+                "ibdDataFileBasePath": "/usr/local/mysql/data/test"
+            }
+        }
+    ]
+}
